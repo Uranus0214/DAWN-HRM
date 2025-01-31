@@ -1,33 +1,80 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>薪資查詢系統</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE-edge">
+
+  <title>成績查詢結果</title>
+  <link rel="shortcut icon" type="image/png" href="https://jmj.cmgsh.tp.edu.tw/jm_logo.png">
+  <meta name='viewport' content="width=device-width,initial-scale=1">
+  <!--link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.2.1/css/bootstrap.min.css' /-->
+  <style> <?!= include('style.css'); ?> </style>
+  <style> 
+  th{
+    background-color: <?= color ?>;
+  }
+  h1{
+    color: <?= color ?>;
+  }
+  </style>
+  <base target="_top">
 </head>
+
 <body>
-    <div class="container">
-        <h1>員工薪資查詢</h1>
-        <form id="salary-form">
-            <label for="employee-id">員工ID:</label>
-            <input type="text" id="employee-id" name="employee-id" required>
-            <br><br>
-            <label for="month">查詢月份:</label>
-            <input type="month" id="month" name="month" required>
-            <br><br>
-            <button type="submit">查詢薪資</button>
-        </form>
+  <div class="container mt-3">
+    <div class="row">
+      <div class="col-10 mx-auto text-center">
+        <h1 class="text-primary">
+          <?=page_title?>
+        </h1>
+        <h2> 查詢結果 </h2>
 
-        <div id="salary-result" style="display:none;">
-            <h2>薪資明細</h2>
-            <p>基本薪資: <span id="base-salary"></span></p>
-            <p>勞保: <span id="labor-insurance"></span></p>
-            <p>健保: <span id="health-insurance"></span></p>
-            <p>總薪資: <span id="total-salary"></span></p>
-        </div>
+        <table class="table table-bordered table-striped table-hover">
+          <thead>
+            <? for (j of headers) { ?>
+            <tr class="bg-primary text-white">
+              <th scope="col">
+                <?= title[j] ?>
+              </th>
+              <th scope="col" colspan="2">
+                <?= value[j] ?>
+              </th>
+            </tr>
+            <? } ?>
+
+          </thead>
+          <tbody>
+            <? for (j of datas) { ?>
+            <tr>
+              <td scope="col">
+                <?= title[j] ?>
+              </td>
+              <td scope="col" colspan="2">
+                <?= value[j] ?>
+              </td>
+            </tr>
+            <? } ?>
+
+
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="1" class="text-middle" style="vertical-align: middle;">
+                <p class="mb-0">
+                  <?= comment_name ?>
+                </p>
+              </td>
+
+              <td colspan="2" class="text-middle">
+                <pre class="mb-0"><?= comment_value ?></pre>
+              </td>
+            <tr>
+          </tfoot>
+        </table>
+      </div>
     </div>
-
-    <script src="script.js"></script>
+  </div>
 </body>
+
 </html>
