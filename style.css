@@ -149,6 +149,76 @@ main {
     padding: 30px;
     flex-grow: 1;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.toolbar {
+    margin-bottom: 20px;
+}
+
+.toolbar button {
+    width: auto;
+    padding: 10px 18px;
+    margin-right: 10px;
+}
+
+#refresh-users-btn {
+    background-color: #2ecc71;
+}
+
+#refresh-users-btn:hover {
+    background-color: #27ae60;
+}
+
+#user-list-container {
+    flex-grow: 1;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+thead {
+    background-color: #34495e;
+    color: white;
+}
+
+th, td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+tbody tr:hover {
+    background-color: #f5f5f5;
+}
+
+td .action-btn {
+    padding: 5px 10px;
+    margin-right: 5px;
+    font-size: 12px;
+    width: auto;
+}
+
+.edit-btn {
+    background-color: #f39c12;
+}
+
+.edit-btn:hover {
+    background-color: #e67e22;
+}
+
+.delete-btn {
+    background-color: #e74c3c;
+}
+
+.delete-btn:hover {
+    background-color: #c0392b;
 }
 
 /* 通用表單容器 (用於登入和新增使用者) */
