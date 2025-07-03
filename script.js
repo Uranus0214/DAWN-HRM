@@ -87,11 +87,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const result = await apiRequest('login', { userId, passwordHash });
 
         if (result.success) {
-            alert('登入成功!');
+            // 1. 登入成功後，立即切換畫面
+            switchView('main-view');
+
+            // 2. 儲存使用者狀態並更新UI
             sessionStorage.setItem('currentUser', JSON.stringify(result.user));
             updateUserInfo(result.user);
-            switchView('main-view');
-            // 登入成功後，自動載入使用者列表
+            
+            // 3. 載入員工列表
             loadUsers();
         } else {
             loginError.textContent = result.message || '登入失敗';
