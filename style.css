@@ -28,7 +28,7 @@ body {
 }
 
 /* 登入畫面樣式 */
-#login-view.active {
+#login-view {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -105,8 +105,8 @@ button:hover {
 }
 
 /* 主內容畫面樣式 */
-#main-view.active {
-    display: flex; /* 修改為 flex 以便 header 和 main 正確排列 */
+#main-view {
+    display: flex;
     flex-direction: column;
     height: 100%;
 }
@@ -233,8 +233,8 @@ td .action-btn {
     text-align: center;
 }
 
-#add-user-view.active {
-    display: flex; /* 使用 flex 來置中 form-container */
+#add-user-view {
+    display: flex;
     justify-content: center;
     align-items: center;
 }

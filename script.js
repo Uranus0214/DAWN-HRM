@@ -44,8 +44,16 @@ document.addEventListener('DOMContentLoaded', () => {
     function switchView(viewId) {
         document.querySelectorAll('.view').forEach(view => {
             view.classList.remove('active');
+            view.style.display = 'none'; // 強制隱藏
         });
-        document.getElementById(viewId).classList.add('active');
+        const activeView = document.getElementById(viewId);
+        activeView.classList.add('active');
+        // 根據 view 的 id 決定 display 樣式
+        if (viewId === 'login-view' || viewId === 'add-user-view') {
+            activeView.style.display = 'flex';
+        } else {
+            activeView.style.display = 'block';
+        }
     }
 
     /**
