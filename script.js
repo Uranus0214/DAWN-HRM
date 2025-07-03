@@ -1,7 +1,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     // --- CONFIG --- //
-    const SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL'; // <--- 請務必替換成您的 Apps Script 網址
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwBY5KfOulc_ZCn7ILW2fki9yddXDPUk7licKTFw1bcWMkxErBHG_6gdTXuOGUL5xcj/exec'; // <--- 請務必替換成您的 Apps Script 網址
 
     // --- DOM Elements --- //
     const loginView = document.getElementById('login-view');
