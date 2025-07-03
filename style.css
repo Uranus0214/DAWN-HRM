@@ -17,14 +17,15 @@ body {
     height: 100%;
 }
 
-.view {
-    display: none; /* 預設隱藏所有視圖 */
+.view,
+.modal {
+    display: none; /* 預設強制隱藏所有頁面和彈窗 */
     width: 100%;
     height: 100%;
 }
 
 .view.active {
-    display: block; /* 只顯示 active 的視圖 */
+    /* display: block; */ /* 移除這個規則，由 JS 完全控制 */
 }
 
 /* 登入畫面樣式 */
@@ -247,7 +248,6 @@ button.secondary {
 
 /* Modal 樣式 (用於編輯使用者) */
 .modal {
-    display: none; /* 預設隱藏 */
     position: fixed;
     z-index: 1000;
     left: 0;

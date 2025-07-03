@@ -42,17 +42,25 @@ document.addEventListener('DOMContentLoaded', () => {
      * @param {string} viewId ('login-view' or 'main-view')
      */
     function switchView(viewId) {
+        // 先隱藏所有 view
         document.querySelectorAll('.view').forEach(view => {
-            view.classList.remove('active');
-            view.style.display = 'none'; // 強制隱藏
+            view.style.display = 'none';
         });
-        const activeView = document.getElementById(viewId);
-        activeView.classList.add('active');
-        // 根據 view 的 id 決定 display 樣式
-        if (viewId === 'login-view' || viewId === 'add-user-view') {
-            activeView.style.display = 'flex';
-        } else {
-            activeView.style.display = 'block';
+
+        // 再根據 ID 顯示指定的 view
+        const viewToShow = document.getElementById(viewId);
+        if (viewToShow) {
+            if (viewId === 'main-view') {
+                 viewToShow.style.display = 'flex'; // main-view 是 flex 佈局
+            } else {
+                 viewToShow.style.display = 'block'; // 其他 view 是 block
+            }
+             // 確保登入和新增頁面內容能置中
+            if (viewId === 'login-view' || viewId === 'add-user-view') {
+                viewToShow.style.display = 'flex';
+                viewToShow.style.justifyContent = 'center';
+                viewToShow.style.alignItems = 'center';
+            }
         }
     }
 
@@ -63,6 +71,14 @@ document.addEventListener('DOMContentLoaded', () => {
      * @returns {Promise<object>} - a promise that resolves to the response data
      */
     async function apiRequest(action, payload) {
+        const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+        const requestPayload = { ...payload };
+
+        // 對於需要權限的操作，附加當前使用者的角色
+        if (['addUser', 'updateUser', 'deleteUser'].includes(action)) {
+            requestPayload.requestingUserRole = currentUser ? currentUser.role : 'guest';
+        }
+
         try {
             const response = await fetch(SCRIPT_URL, {
                 method: 'POST',
@@ -70,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: {
                     'Content-Type': 'text/plain;charset=utf-8', // Apps Script 的特殊要求
                 },
-                body: JSON.stringify({ action, payload }),
+                body: JSON.stringify({ action, payload: requestPayload }),
             });
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -116,9 +132,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateUserInfo(user) {
         if (user) {
             userInfo.textContent = `歡迎, ${user.name} (${user.role})`;
-            const isAdmin = user.role === 'admin';
+            const isAdminOrIT = user.role === 'admin' || user.role === 'IT';
             // 根據權限顯示/隱藏按鈕
-            navigateToAddUserBtn.style.display = isAdmin ? 'inline-block' : 'none';
+            navigateToAddUserBtn.style.display = isAdminOrIT ? 'inline-block' : 'none';
             // 未來也可以在這裡控制表格中的編輯/刪除按鈕是否渲染
         } else {
              userInfo.textContent = '';
@@ -156,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
         userListTbody.innerHTML = ''; // 清空舊列表
         if (result.success && result.users) {
             const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
-            const isAdmin = currentUser.role === 'admin';
+            const isAdminOrIT = currentUser.role === 'admin' || currentUser.role === 'IT';
 
             result.users.forEach(user => {
                 const tr = document.createElement('tr');
@@ -168,8 +184,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     <td class="actions"></td>
                 `;
 
-                // 只有 admin 可以看到編輯和刪除按鈕
-                if (isAdmin) {
+                // 只有 admin 或 IT 可以看到編輯和刪除按鈕
+                if (isAdminOrIT) {
                     const actionsCell = tr.querySelector('.actions');
                     const editBtn = document.createElement('button');
                     editBtn.textContent = '編輯';
@@ -199,11 +215,11 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('edit-name').value = user.name;
         document.getElementById('edit-email').value = user.email;
         document.getElementById('edit-role').value = user.role;
-        editUserModal.style.display = 'flex';
+        editUserModal.style.display = 'flex'; // 直接控制顯示
     }
 
     function closeEditModal() {
-        editUserModal.style.display = 'none';
+        editUserModal.style.display = 'none'; // 直接控制隱藏
     }
 
     /**
