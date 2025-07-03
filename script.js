@@ -1,104 +1,186 @@
-// script.js
-document.getElementById('loginForm').addEventListener('submit', async function(event) {
-    event.preventDefault();
 
-    const userId = document.getElementById('user_id').value;
-    const password = document.getElementById('password').value;
-    const messageElement = document.getElementById('message');
+document.addEventListener('DOMContentLoaded', () => {
+    // --- CONFIG --- //
+    const SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL'; // <--- 請務必替換成您的 Apps Script 網址
 
-    // 使用 SHA256 加密密碼
-    const hashedPassword = sha256(password);
+    // --- DOM Elements --- //
+    const loginView = document.getElementById('login-view');
+    const mainView = document.getElementById('main-view');
+    const loginForm = document.getElementById('login-form');
+    const loginError = document.getElementById('login-error');
+    const userInfo = document.getElementById('user-info');
+    const logoutBtn = document.getElementById('logout-btn');
+    
+    const addUserModal = document.getElementById('add-user-modal');
+    const showAddUserModalBtn = document.getElementById('show-add-user-modal-btn');
+    const addUserForm = document.getElementById('add-user-form');
+    const closeModalBtn = document.querySelector('.close-btn');
+    const addUserError = document.getElementById('add-user-error');
+    const addUserSuccess = document.getElementById('add-user-success');
 
-    // 替換為您部署的 Google Apps Script 網頁應用程式 URL
-    const appsScriptUrl = 'https://script.google.com/macros/s/AKfycbwBY5KfOulc_ZCn7ILW2fki9yddXDPUk7licKTFw1bcWMkxErBHG_6gdTXuOGUL5xcj/exec'; 
+    // --- Functions --- //
 
-    // 將資料轉換為 URL-encoded 格式
-    const formData = new URLSearchParams();
-    formData.append('action', 'login'); // 新增 action 參數
-    formData.append('user_id', userId);
-    formData.append('password', hashedPassword);
+    /**
+     * SHA256 加密函數
+     * @param {string} string 
+     * @returns {string} - a hex string
+     */
+    function sha256(string) {
+        return CryptoJS.SHA256(string).toString(CryptoJS.enc.Hex);
+    }
 
-    try {
-        const response = await fetch(appsScriptUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: formData.toString()
+    /**
+     * 切換顯示的視圖
+     * @param {string} viewId ('login-view' or 'main-view')
+     */
+    function switchView(viewId) {
+        document.querySelectorAll('.view').forEach(view => {
+            view.classList.remove('active');
         });
+        document.getElementById(viewId).classList.add('active');
+    }
 
-        const data = await response.json();
-
-        if (data.status === 'success') {
-            messageElement.textContent = `登入成功！歡迎，${data.user.name} (${data.user.role})`;
-            messageElement.className = 'message success';
-            console.log('User Info:', data.user);
-            alert(`登入成功！歡迎，${data.user.name} (${data.user.role})`);
-
-            // 根據角色導向不同頁面 (範例)
-            if (data.user.role === 'admin') {
-                // window.location.href = 'admin_dashboard.html';
-            } else if (data.user.role === 'staff') {
-                // window.location.href = 'staff_dashboard.html';
+    /**
+     * 處理 API 請求
+     * @param {string} action 
+     * @param {object} payload 
+     * @returns {Promise<object>} - a promise that resolves to the response data
+     */
+    async function apiRequest(action, payload) {
+        try {
+            const response = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'cors',
+                headers: {
+                    'Content-Type': 'text/plain;charset=utf-8', // Apps Script 的特殊要求
+                },
+                body: JSON.stringify({ action, payload }),
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-
-        } else {
-            messageElement.textContent = `登入失敗: ${data.message}`;
-            messageElement.className = 'message';
+            return await response.json();
+        } catch (error) {
+            console.error('API Request Error:', error);
+            return { success: false, message: `前端請求失敗: ${error.message}` };
         }
-    } catch (error) {
-        messageElement.textContent = `發生錯誤: ${error.message}`;
-        messageElement.className = 'message';
-        console.error('Error:', error);
-    }
-});
-
-document.getElementById('createAccountBtn').addEventListener('click', async function() {
-    const userId = document.getElementById('user_id').value;
-    const password = document.getElementById('password').value;
-    const messageElement = document.getElementById('message');
-
-    if (!userId || !password) {
-        messageElement.textContent = '請輸入帳號和密碼來建立新帳號。';
-        messageElement.className = 'message';
-        return;
     }
 
-    const hashedPassword = sha256(password);
+    /**
+     * 處理登入邏輯
+     */
+    async function handleLogin(e) {
+        e.preventDefault();
+        loginError.textContent = '';
+        const userId = loginForm.user_id.value;
+        const password = loginForm.password.value;
+        const passwordHash = sha256(password);
 
-    // 替換為您部署的 Google Apps Script 網頁應用程式 URL
-    const appsScriptUrl = 'YOUR_APPS_SCRIPT_WEB_APP_URL'; 
+        const result = await apiRequest('login', { userId, passwordHash });
 
-    const formData = new URLSearchParams();
-    formData.append('action', 'createAccount'); // 新增 action 參數
-    formData.append('user_id', userId);
-    formData.append('password', hashedPassword);
-    // 您可以在這裡添加更多欄位，例如 name, email, role 等，讓使用者輸入
-    // 例如：formData.append('name', prompt('請輸入您的姓名：'));
-    // formData.append('email', prompt('請輸入您的電子郵件：'));
-    // formData.append('role', 'staff'); // 預設角色為 staff
-
-    try {
-        const response = await fetch(appsScriptUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: formData.toString()
-        });
-
-        const data = await response.json();
-
-        if (data.status === 'success') {
-            messageElement.textContent = `帳號建立成功！${data.message}`;
-            messageElement.className = 'message success';
+        if (result.success) {
+            alert('登入成功!');
+            sessionStorage.setItem('currentUser', JSON.stringify(result.user));
+            updateUserInfo(result.user);
+            switchView('main-view');
         } else {
-            messageElement.textContent = `帳號建立失敗: ${data.message}`;
-            messageElement.className = 'message';
+            loginError.textContent = result.message || '登入失敗';
         }
-    } catch (error) {
-        messageElement.textContent = `發生錯誤: ${error.message}`;
-        messageElement.className = 'message';
-        console.error('Error:', error);
     }
+    
+    /**
+     * 更新使用者資訊顯示
+     * @param {object} user 
+     */
+    function updateUserInfo(user) {
+        if (user) {
+            userInfo.textContent = `歡迎, ${user.name} (${user.role})`;
+            // 根據權限顯示/隱藏按鈕
+            if (user.role === 'admin') {
+                showAddUserModalBtn.style.display = 'block';
+            } else {
+                showAddUserModalBtn.style.display = 'none';
+            }
+        } else {
+             userInfo.textContent = '';
+        }
+    }
+
+    /**
+     * 處理登出
+     */
+    function handleLogout() {
+        sessionStorage.removeItem('currentUser');
+        switchView('login-view');
+        loginForm.reset();
+    }
+
+    /**
+     * 檢查登入狀態
+     */
+    function checkLoginStatus() {
+        const user = sessionStorage.getItem('currentUser');
+        if (user) {
+            updateUserInfo(JSON.parse(user));
+            switchView('main-view');
+        } else {
+            switchView('login-view');
+        }
+    }
+
+    // --- Modal --- //
+    function showModal() {
+        addUserModal.style.display = 'flex';
+    }
+
+    function closeModal() {
+        addUserModal.style.display = 'none';
+        addUserForm.reset();
+        addUserError.textContent = '';
+        addUserSuccess.textContent = '';
+    }
+
+    /**
+     * 處理新增使用者
+     */
+    async function handleAddUser(e) {
+        e.preventDefault();
+        addUserError.textContent = '';
+        addUserSuccess.textContent = '';
+
+        const userId = document.getElementById('new-user-id').value;
+        const name = document.getElementById('new-name').value;
+        const password = document.getElementById('new-password').value;
+        const email = document.getElementById('new-email').value;
+        const role = document.getElementById('new-role').value;
+        const passwordHash = sha256(password);
+
+        const result = await apiRequest('addUser', { userId, name, passwordHash, email, role });
+
+        if (result.success) {
+            addUserSuccess.textContent = '新增成功!';
+            addUserForm.reset();
+            // 可以在這裡加入延遲後關閉 modal 的功能
+            setTimeout(closeModal, 1500);
+        } else {
+            addUserError.textContent = result.message || '新增失敗';
+        }
+    }
+
+    // --- Event Listeners --- //
+    loginForm.addEventListener('submit', handleLogin);
+    logoutBtn.addEventListener('click', handleLogout);
+    showAddUserModalBtn.addEventListener('click', showModal);
+    closeModalBtn.addEventListener('click', closeModal);
+    addUserForm.addEventListener('submit', handleAddUser);
+
+    // 點擊 modal 外部關閉
+    window.addEventListener('click', (event) => {
+        if (event.target == addUserModal) {
+            closeModal();
+        }
+    });
+
+    // --- Initial Load --- //
+    checkLoginStatus();
 });

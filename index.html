@@ -1,29 +1,91 @@
+
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HRM 系統登入</title>
+    <title>HRM 員工管理系統</title>
     <link rel="stylesheet" href="style.css">
+    <!-- 引入 CryptoJS 用於 SHA256 加密 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 </head>
 <body>
-    <div class="login-container">
-        <h2>HRM 系統登入</h2>
-        <form id="loginForm">
-            <div class="input-group">
-                <label for="user_id">帳號 (User ID):</label>
-                <input type="text" id="user_id" name="user_id" required>
+
+    <div id="app">
+        <!-- 登入畫面 -->
+        <div id="login-view" class="view active">
+            <div class="login-container">
+                <h2>HRM 系統登入</h2>
+                <form id="login-form">
+                    <div class="input-group">
+                        <label for="user_id">帳號</label>
+                        <input type="text" id="user_id" name="user_id" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="password">密碼</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                    <button type="submit">登入</button>
+                    <p id="login-error" class="error-message"></p>
+                </form>
             </div>
-            <div class="input-group">
-                <label for="password">密碼:</label>
-                <input type="password" id="password" name="password" required>
+        </div>
+
+        <!-- 主內容畫面 (登入後顯示) -->
+        <div id="main-view" class="view">
+            <header>
+                <h1>員工資料管理</h1>
+                <div class="user-profile">
+                    <span id="user-info"></span>
+                    <button id="logout-btn">登出</button>
+                </div>
+            </header>
+            
+            <main>
+                <!-- 這裡未來可以放員工列表、新增按鈕等 -->
+                <p>歡迎使用本系統。</p>
+                 <button id="show-add-user-modal-btn">新增帳號</button>
+            </main>
+        </div>
+
+        <!-- 新增帳號 Modal -->
+        <div id="add-user-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <h2>新增使用者帳號</h2>
+                <form id="add-user-form">
+                    <div class="input-group">
+                        <label for="new-user-id">使用者ID</label>
+                        <input type="text" id="new-user-id" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="new-name">姓名</label>
+                        <input type="text" id="new-name" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="new-password">密碼</label>
+                        <input type="password" id="new-password" required>
+                    </div>
+                     <div class="input-group">
+                        <label for="new-email">Email</label>
+                        <input type="email" id="new-email" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="new-role">權限 (role)</label>
+                        <select id="new-role">
+                            <option value="user">user</option>
+                            <option value="admin">admin</option>
+                        </select>
+                    </div>
+                    <button type="submit">確認新增</button>
+                    <p id="add-user-error" class="error-message"></p>
+                     <p id="add-user-success" class="success-message"></p>
+                </form>
             </div>
-            <button type="submit">登入</button>
-            <button type="button" id="createAccountBtn">新建帳號</button>
-            <p id="message" class="message"></p>
-        </form>
+        </div>
+
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
+
     <script src="script.js"></script>
 </body>
 </html>
