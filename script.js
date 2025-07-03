@@ -6,15 +6,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- DOM Elements --- //
     const loginView = document.getElementById('login-view');
     const mainView = document.getElementById('main-view');
+    const addUserView = document.getElementById('add-user-view'); // 新增
     const loginForm = document.getElementById('login-form');
     const loginError = document.getElementById('login-error');
     const userInfo = document.getElementById('user-info');
     const logoutBtn = document.getElementById('logout-btn');
     
-    const addUserModal = document.getElementById('add-user-modal');
-    const showAddUserModalBtn = document.getElementById('show-add-user-modal-btn');
+    const navigateToAddUserBtn = document.getElementById('navigate-to-add-user-btn'); // 修改
     const addUserForm = document.getElementById('add-user-form');
-    const closeModalBtn = document.querySelector('.close-btn');
+    const backToMainBtn = document.getElementById('back-to-main-btn'); // 新增
     const addUserError = document.getElementById('add-user-error');
     const addUserSuccess = document.getElementById('add-user-success');
 
@@ -97,9 +97,9 @@ document.addEventListener('DOMContentLoaded', () => {
             userInfo.textContent = `歡迎, ${user.name} (${user.role})`;
             // 根據權限顯示/隱藏按鈕
             if (user.role === 'admin') {
-                showAddUserModalBtn.style.display = 'block';
+                navigateToAddUserBtn.style.display = 'block';
             } else {
-                showAddUserModalBtn.style.display = 'none';
+                navigateToAddUserBtn.style.display = 'none';
             }
         } else {
              userInfo.textContent = '';
@@ -128,18 +128,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- Modal --- //
-    function showModal() {
-        addUserModal.style.display = 'flex';
-    }
-
-    function closeModal() {
-        addUserModal.style.display = 'none';
-        addUserForm.reset();
-        addUserError.textContent = '';
-        addUserSuccess.textContent = '';
-    }
-
     /**
      * 處理新增使用者
      */
@@ -158,10 +146,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const result = await apiRequest('addUser', { userId, name, passwordHash, email, role });
 
         if (result.success) {
-            addUserSuccess.textContent = '新增成功!';
+            addUserSuccess.textContent = '新增成功! 將在 1.5 秒後返回主畫面。';
             addUserForm.reset();
-            // 可以在這裡加入延遲後關閉 modal 的功能
-            setTimeout(closeModal, 1500);
+            setTimeout(() => {
+                switchView('main-view');
+                addUserSuccess.textContent = ''; // 清空成功訊息
+            }, 1500);
         } else {
             addUserError.textContent = result.message || '新增失敗';
         }
@@ -170,16 +160,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Event Listeners --- //
     loginForm.addEventListener('submit', handleLogin);
     logoutBtn.addEventListener('click', handleLogout);
-    showAddUserModalBtn.addEventListener('click', showModal);
-    closeModalBtn.addEventListener('click', closeModal);
+    navigateToAddUserBtn.addEventListener('click', () => switchView('add-user-view'));
+    backToMainBtn.addEventListener('click', () => switchView('main-view'));
     addUserForm.addEventListener('submit', handleAddUser);
-
-    // 點擊 modal 外部關閉
-    window.addEventListener('click', (event) => {
-        if (event.target == addUserModal) {
-            closeModal();
-        }
-    });
 
     // --- Initial Load --- //
     checkLoginStatus();

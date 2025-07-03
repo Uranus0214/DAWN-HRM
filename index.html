@@ -44,14 +44,13 @@
             <main>
                 <!-- 這裡未來可以放員工列表、新增按鈕等 -->
                 <p>歡迎使用本系統。</p>
-                 <button id="show-add-user-modal-btn">新增帳號</button>
+                 <button id="navigate-to-add-user-btn">新增帳號</button>
             </main>
         </div>
 
-        <!-- 新增帳號 Modal -->
-        <div id="add-user-modal" class="modal">
-            <div class="modal-content">
-                <span class="close-btn">&times;</span>
+        <!-- 新增帳號畫面 -->
+        <div id="add-user-view" class="view">
+            <div class="form-container">
                 <h2>新增使用者帳號</h2>
                 <form id="add-user-form">
                     <div class="input-group">
@@ -78,8 +77,9 @@
                         </select>
                     </div>
                     <button type="submit">確認新增</button>
+                    <button type="button" id="back-to-main-btn" class="secondary">返回</button>
                     <p id="add-user-error" class="error-message"></p>
-                     <p id="add-user-success" class="success-message"></p>
+                    <p id="add-user-success" class="success-message"></p>
                 </form>
             </div>
         </div>

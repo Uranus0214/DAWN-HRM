@@ -151,47 +151,32 @@ main {
     overflow-y: auto;
 }
 
-/* Modal 樣式 */
-.modal {
-    display: none; /* 預設隱藏 */
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
+/* 通用表單容器 (用於登入和新增使用者) */
+.form-container {
+    padding: 40px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.5);
+    max-width: 450px;
+    margin: auto; /* 讓它在 add-user-view 中也置中 */
+    text-align: center;
+}
+
+#add-user-view {
+    display: flex; /* 使用 flex 來置中 form-container */
     justify-content: center;
     align-items: center;
 }
 
-.modal-content {
-    background-color: #fefefe;
-    margin: auto;
-    padding: 30px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 500px;
-    border-radius: 8px;
-    position: relative;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+/* 次要按鈕樣式 (例如返回按鈕) */
+button.secondary {
+    background-color: #bdc3c7;
+    margin-top: 10px;
 }
 
-.close-btn {
-    color: #aaa;
-    position: absolute;
-    top: 10px;
-    right: 20px;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.close-btn:hover,
-.close-btn:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
+button.secondary:hover {
+    background-color: #a1a8ad;
 }
 
 #add-user-form select {
