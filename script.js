@@ -10,7 +10,7 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
     const hashedPassword = sha256(password);
 
     // 替換為您部署的 Google Apps Script 網頁應用程式 URL
-    const appsScriptUrl = 'https://script.google.com/macros/s/AKfycbwhtrEeWELiMuuUJwoLVb1xp_i1UkTtMdFp8w1ljDvU50EDbDmncrkWwUbcfp64G3L4/exec'; 
+    const appsScriptUrl = 'https://script.google.com/macros/s/AKfycbwHTKewJy1Zenot5wvJZWEapFx79oa2p0AkL3K0AWz6fXdUm4Y9Hpz-fiSZCBbhZZ8a/exec'; 
 
     try {
         const response = await fetch(appsScriptUrl, {
