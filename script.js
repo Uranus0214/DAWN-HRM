@@ -168,9 +168,13 @@ document.addEventListener('DOMContentLoaded', () => {
      * 載入並渲染使用者列表
      */
     async function loadUsers() {
+        console.log('嘗試載入使用者列表...');
         const result = await apiRequest('getUsers', {});
+        console.log('API 回應:', result);
+
         userListTbody.innerHTML = ''; // 清空舊列表
-        if (result.success && result.users) {
+        if (result.success && result.users && result.users.length > 0) {
+            console.log('成功獲取使用者資料，開始渲染...', result.users);
             const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
             const isAdminOrIT = currentUser.role === 'admin' || currentUser.role === 'IT';
 
@@ -202,6 +206,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 userListTbody.appendChild(tr);
             });
+        } else {
+            console.log('未獲取到使用者資料或 API 呼叫失敗。', result.message || '未知錯誤');
+            // 可以在這裡顯示一個友善的訊息給使用者
+            userListTbody.innerHTML = '<tr><td colspan="5">沒有員工資料或載入失敗。</td></tr>';
         }
     }
 
